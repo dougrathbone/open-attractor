@@ -1,0 +1,36 @@
+﻿<s:SurfaceWindow x:Class="OpenAttractor.SurfaceWindow1"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:s="http://schemas.microsoft.com/surface/2008" xmlns:Properties="clr-namespace:OpenAttractor.Properties"
+    Title="OpenAttractor">
+  <Grid>
+        <Image Source="/OpenAttractor;component/Resources/WoodBackground.png" Panel.ZIndex="-1000" Stretch="UniformToFill" />
+        <s:ScatterView>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Chrysanthemum.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Desert.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Hydrangeas.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Jellyfish.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Koala.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Lighthouse.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Penguins.jpg"/>
+            </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
+            </s:ScatterViewItem>
+
+        </s:ScatterView>
+    </Grid>
+</s:SurfaceWindow>
