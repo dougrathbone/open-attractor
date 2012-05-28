@@ -30,6 +30,9 @@
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
             </s:ScatterViewItem>
+            <s:ScatterViewItem>
+                <MediaElement Source="Videos/Wildlife.wmv" LoadedBehavior="Play" UnloadedBehavior="Stop" Stretch="None" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </s:ScatterViewItem>
 
         </s:ScatterView>
     </Grid>

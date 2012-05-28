@@ -94,6 +94,9 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Videos\Wildlife.wmv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Pictures\Chrysanthemum.jpg" />
     <Resource Include="Pictures\Desert.jpg" />
     <Resource Include="Pictures\Hydrangeas.jpg" />
