@@ -30,9 +30,28 @@
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
             </s:ScatterViewItem>
-            <s:ScatterViewItem MinHeight="180" MinWidth="320">
-                <MediaElement Source="Videos/Wildlife.wmv" LoadedBehavior="Play" UnloadedBehavior="Stop" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            </s:ScatterViewItem>
+            <s:ScatterViewItem MinHeight="220" MinWidth="360" Background="Transparent">
+				<Grid>
+					<s:SurfaceButton  Background="Transparent" x:Name="PlayButton" Click="SurfaceButton_Click" Panel.ZIndex="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+						<Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" Stretch="Uniform" />
+					</s:SurfaceButton>
+					<Image Source="/OpenAttractor;component/Resources/video_overlay.png" Panel.ZIndex="2" Stretch="UniformToFill" Opacity="0.3" HorizontalAlignment="Center" VerticalAlignment="Center" />
+					<StackPanel VerticalAlignment="Top" Panel.ZIndex="1" >
+						<MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="Videos/Wildlife.wmv" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Position="00:00:02"/>
+						<StackPanel Orientation="Horizontal" Margin="0">
+							<s:SurfaceButton Background="Transparent" Visibility="Hidden" x:Name="RewindButton" Click="RewindButton_Click">
+								<Image Source="/OpenAttractor;component/Resources/video_rewindbutton.png" Stretch="None" />
+							</s:SurfaceButton>
+							<s:SurfaceButton Background="Transparent" Visibility="Collapsed" x:Name="PauseButton" Click="PauseButton_Click">
+								<Image Source="/OpenAttractor;component/Resources/video_pausebutton.png" Stretch="None" />
+							</s:SurfaceButton>
+							<s:SurfaceButton Background="Transparent" Visibility="Collapsed" x:Name="PlayButtonSmall" Click="PlayButtonSmall_Click">
+								<Image Source="/OpenAttractor;component/Resources/video_playbutton_small.png" Stretch="None" />
+							</s:SurfaceButton>
+						</StackPanel>
+					</StackPanel>
+				</Grid>
+			</s:ScatterViewItem>
 
         </s:ScatterView>
     </Grid>

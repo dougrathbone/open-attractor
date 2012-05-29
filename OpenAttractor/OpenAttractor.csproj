@@ -94,6 +94,13 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\video_overlay.png" />
+    <Resource Include="Resources\video_pausebutton.png" />
+    <Resource Include="Resources\video_playbutton_small.png" />
+    <Resource Include="Resources\resources_play_down.png" />
+    <Resource Include="Resources\video_playbutton_large.png" />
+    <Resource Include="Resources\video_rewindbutton.png" />
+    <Resource Include="Resources\resources_video_frame.png" />
     <Content Include="Videos\Wildlife.wmv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
