@@ -31,9 +31,9 @@
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
             </s:ScatterViewItem>
-            
+            <s:ScatterViewItem Background="Transparent">
                 <OpenAttractor:VideoPlayer Source="Videos/Wildlife.wmv" />
-
+            </s:ScatterViewItem>
         </s:ScatterView>
     </Grid>
 </s:SurfaceWindow>

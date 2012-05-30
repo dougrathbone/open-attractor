@@ -37,6 +37,7 @@ namespace OpenAttractor
                 videoPlayer.Play();
             };
             videoPlayer.Play();
+            videoPlayer.Position = new TimeSpan(0, 0, 0, 1);
             videoPlayer.Stop();
         }
 

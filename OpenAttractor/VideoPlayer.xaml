@@ -6,26 +6,24 @@
              xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d">
-	<StackPanel Orientation="Vertical">
-		<s:ScatterViewItem Background="Transparent" VerticalAlignment="Top">
-			<Grid>
-				<s:SurfaceButton  Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" Panel.ZIndex="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-					<Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" Stretch="UniformToFill" />
-				</s:SurfaceButton>
-				<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" Panel.ZIndex="2" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-				<MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Position="00:00:02"/>
-			</Grid>
-		</s:ScatterViewItem>
-        <StackPanel Orientation="Horizontal" Margin="0">
-			<s:SurfaceButton Background="Transparent" Margin="0" Padding="0" Visibility="Hidden" x:Name="RewindButton" Click="RewindButton_Click">
-				<Image Source="/OpenAttractor;component/Resources/video_rewindbutton.png" Stretch="UniformToFill"/>
+    <Grid>
+        <Grid Grid.Row="1">
+            <s:SurfaceButton  Background="Transparent" Margin="0" Padding="0" x:Name="PlayButton" Click="PlayButton_Click" Panel.ZIndex="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" Stretch="Uniform" />
             </s:SurfaceButton>
-			<s:SurfaceButton Background="Transparent" Margin="0" Padding="0" Visibility="Collapsed" x:Name="PauseButton" Click="PauseButton_Click">
-                <Image Source="/OpenAttractor;component/Resources/video_pausebutton.png" Stretch="None" />
+            <Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" Panel.ZIndex="2" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Panel.ZIndex="1" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop"/>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Panel.ZIndex="1">
+            <s:SurfaceButton Background="Transparent" x:Name="RewindButton" Click="RewindButton_Click">
+                <Image Source="/OpenAttractor;component/Resources/video_rewindbutton.png"/>
             </s:SurfaceButton>
-            <s:SurfaceButton Background="Transparent" Margin="0" Padding="0" Visibility="Collapsed" x:Name="PlayButtonSmall" Click="PlayButtonSmall_Click">
-				<Image Source="/OpenAttractor;component/Resources/video_playbutton_small.png" Stretch="None" />
+            <s:SurfaceButton Background="Transparent" x:Name="PauseButton" Click="PauseButton_Click">
+                <Image Source="/OpenAttractor;component/Resources/video_pausebutton.png" />
+            </s:SurfaceButton>
+            <s:SurfaceButton Background="Transparent" x:Name="PlayButtonSmall" Click="PlayButtonSmall_Click">
+                <Image Source="/OpenAttractor;component/Resources/video_playbutton_small.png" />
             </s:SurfaceButton>
         </StackPanel>
-    </StackPanel>
+    </Grid>
 </UserControl>
