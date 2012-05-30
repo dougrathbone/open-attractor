@@ -44,10 +44,11 @@ namespace OpenAttractor
         {
             videoPlayer.Play();
             PlayButton.Visibility = Visibility.Hidden;
-            Panel.SetZIndex(PlayButton, -1);
+			Overlay.Visibility = Visibility.Hidden;
 
             PauseButton.Visibility = Visibility.Visible;
             RewindButton.Visibility = Visibility.Visible;
+			PlayButtonSmall.Visibility = Visibility.Hidden;
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
@@ -61,11 +62,14 @@ namespace OpenAttractor
 
             ((SurfaceButton)sender).Visibility = Visibility.Collapsed;
             PlayButtonSmall.Visibility = Visibility.Visible;
+			Overlay.Visibility = Visibility.Visible;
+			PlayButton.Visibility = Visibility.Visible;
         }
 
         private void videoPlayer_Loaded(object sender, RoutedEventArgs e)
         {
             ((MediaElement)sender).Play();
+			((MediaElement)sender).Position = new TimeSpan(0, 0, 0, 1);
             ((MediaElement)sender).Pause();
         }
 
@@ -74,7 +78,9 @@ namespace OpenAttractor
             videoPlayer.Play();
 
             ((SurfaceButton)sender).Visibility = Visibility.Collapsed;
-            Overlay.Visibility = Visibility.Collapsed;
+
+            Overlay.Visibility = Visibility.Hidden;
+			PlayButton.Visibility = Visibility.Hidden;
             PauseButton.Visibility = Visibility.Visible;
         }
     }

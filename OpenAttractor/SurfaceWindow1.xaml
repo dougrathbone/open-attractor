@@ -5,7 +5,8 @@
                  xmlns:OpenAttractor="clr-namespace:OpenAttractor" Title="OpenAttractor">
   <Grid>
         <Image Source="/OpenAttractor;component/Resources/WoodBackground.png" Panel.ZIndex="-1000" Stretch="UniformToFill" />
-        <s:ScatterView>
+		<s:TagVisualizer  />
+		<s:ScatterView>
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Chrysanthemum.jpg"/>
             </s:ScatterViewItem>
@@ -30,9 +31,8 @@
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
             </s:ScatterViewItem>
-            <s:ScatterViewItem MinHeight="220" MinWidth="360" Background="Transparent">
+            
                 <OpenAttractor:VideoPlayer Source="Videos/Wildlife.wmv" />
-			</s:ScatterViewItem>
 
         </s:ScatterView>
     </Grid>
