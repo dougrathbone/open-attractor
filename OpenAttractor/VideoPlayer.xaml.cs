@@ -28,6 +28,9 @@ namespace OpenAttractor
         public double CurrentVideoProgress { get { return (double)GetValue(_currentVideoProgress); } set { SetValue(_currentVideoProgress, value); } }
         public static readonly DependencyProperty _currentVideoProgress = DependencyProperty.Register("CurrentVideoProgress", typeof(double), typeof(VideoPlayer), new FrameworkPropertyMetadata((double)0));
 
+        public bool LargePlayButtonPressed { get { return (bool)GetValue(_largePlayButtonPressed); } set { SetValue(_largePlayButtonPressed, value); } }
+        public static readonly DependencyProperty _largePlayButtonPressed = DependencyProperty.Register("LargePlayButtonPressed", typeof(bool), typeof(VideoPlayer), new FrameworkPropertyMetadata(false));
+
         private Timer _playTimer;
 
         public VideoPlayer()
