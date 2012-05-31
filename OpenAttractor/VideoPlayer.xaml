@@ -6,25 +6,44 @@
              xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d">
-	<Grid>
-		<s:SurfaceButton  Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" Grid.ZIndex="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
-			<Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" Stretch="Uniform" />
-		</s:SurfaceButton>
-		<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" Grid.ZIndex="2" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<StackPanel VerticalAlignment="Top">
-			<Image Source="/OpenAttractor;component/Pictures/Koala.jpg" Grid.ZIndex="-5" />
-			<MediaElement Visibility="Collapsed"  x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Position="00:00:02"/>
-			<StackPanel Orientation="Horizontal" Margin="0">
-				<s:SurfaceButton Background="Transparent" Visibility="Hidden" x:Name="RewindButton" Click="RewindButton_Click">
-					<Image Source="/OpenAttractor;component/Resources/video_rewindbutton.png"   Stretch="None" />
-				</s:SurfaceButton>
-				<s:SurfaceButton Background="Transparent" Visibility="Collapsed" x:Name="PauseButton" Click="PauseButton_Click">
-					<Image Source="/OpenAttractor;component/Resources/video_pausebutton.png" Stretch="None" />
-				</s:SurfaceButton>
-				<s:SurfaceButton Background="Transparent" Visibility="Collapsed" x:Name="PlayButtonSmall" Click="PlayButtonSmall_Click">
-					<Image Source="/OpenAttractor;component/Resources/video_playbutton_small.png" Stretch="None" />
-				</s:SurfaceButton>
-			</StackPanel>
-		</StackPanel>
-	</Grid>
+    <Grid>
+         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="UniformToFill" />
+            <Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" />
+            <s:SurfaceButton Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <s:SurfaceButton.Content>
+                    <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" />
+                </s:SurfaceButton.Content>
+            </s:SurfaceButton>
+        </Grid>
+       <Grid Height="40" VerticalAlignment="Bottom" Margin="5,0,5,-40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition ColumnDefinition.Width="40" />
+                <ColumnDefinition ColumnDefinition.Width="40" />
+                <ColumnDefinition ColumnDefinition.Width="*" />
+            </Grid.ColumnDefinitions>
+            <s:SurfaceButton x:Name="RewindButton" Click="RewindButton_Click"  VerticalAlignment="Top">
+                <s:SurfaceButton.Background>
+                    <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_rewindbutton.png" />
+                </s:SurfaceButton.Background>
+            </s:SurfaceButton>
+            <s:SurfaceButton x:Name="PauseButton" Visibility="Collapsed" Click="PauseButton_Click"  Grid.Column="1">
+                <s:SurfaceButton.Background>
+                    <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_pausebutton.png" />
+                </s:SurfaceButton.Background>
+            </s:SurfaceButton>
+            <s:SurfaceButton x:Name="PlayButtonSmall" Grid.Column="1" Click="PlayButtonSmall_Click">
+                <s:SurfaceButton.Background>
+                    <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_playbutton_small.png" />
+                </s:SurfaceButton.Background>
+            </s:SurfaceButton>
+            <Border Border.Background="#881E1E1E" FrameworkElement.Margin="10,15,0,15" FrameworkElement.Height="4" Grid.Column="2" />
+            <Border Border.Background="#FF0BD5C9" FrameworkElement.Margin="10,15,0,15" FrameworkElement.Height="4" Grid.Column="2">
+                <UIElement.RenderTransform>
+                    <ScaleTransform ScaleTransform.ScaleX="{Binding Path=CurrentVideoProgress}" />
+                </UIElement.RenderTransform>
+            </Border>
+
+        </Grid>
+    </Grid>
 </UserControl>

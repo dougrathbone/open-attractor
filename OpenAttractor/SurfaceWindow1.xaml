@@ -3,18 +3,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:s="http://schemas.microsoft.com/surface/2008" xmlns:Properties="clr-namespace:OpenAttractor.Properties"
                  xmlns:OpenAttractor="clr-namespace:OpenAttractor" Title="OpenAttractor">
-  <Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition  Width="Auto" />
-		</Grid.ColumnDefinitions>
-			<Image Grid.Row="1" Source="/OpenAttractor;component/Resources/WoodBackground.png" Panel.ZIndex="-1000" Stretch="UniformToFill" />
-		<s:ScatterView Grid.Row="1">
-            <s:ScatterViewItem>
-				<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" Grid.ZIndex="2" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-			</s:ScatterViewItem>
+    <s:SurfaceWindow.Background>
+        <ImageBrush ImageSource="/OpenAttractor;component/Resources/WoodBackground.png"/>
+    </s:SurfaceWindow.Background>
+		<s:ScatterView>
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Desert.jpg"/>
             </s:ScatterViewItem>
@@ -36,9 +28,8 @@
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
             </s:ScatterViewItem>
-            <s:ScatterViewItem Background="Transparent">
+            <s:ScatterViewItem MinHeight="80" MinWidth="80">
                 <OpenAttractor:VideoPlayer Source="Videos/Wildlife.wmv" />
             </s:ScatterViewItem>
         </s:ScatterView>
-    </Grid>
 </s:SurfaceWindow>
