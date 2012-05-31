@@ -4,12 +4,17 @@
     xmlns:s="http://schemas.microsoft.com/surface/2008" xmlns:Properties="clr-namespace:OpenAttractor.Properties"
                  xmlns:OpenAttractor="clr-namespace:OpenAttractor" Title="OpenAttractor">
   <Grid>
-        <Image Source="/OpenAttractor;component/Resources/WoodBackground.png" Panel.ZIndex="-1000" Stretch="UniformToFill" />
-		<s:TagVisualizer  />
-		<s:ScatterView>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition  Width="Auto" />
+		</Grid.ColumnDefinitions>
+			<Image Grid.Row="1" Source="/OpenAttractor;component/Resources/WoodBackground.png" Panel.ZIndex="-1000" Stretch="UniformToFill" />
+		<s:ScatterView Grid.Row="1">
             <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Chrysanthemum.jpg"/>
-            </s:ScatterViewItem>
+				<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" Grid.ZIndex="2" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+			</s:ScatterViewItem>
             <s:ScatterViewItem>
                 <Image Source="/OpenAttractor;component/Pictures/Desert.jpg"/>
             </s:ScatterViewItem>
