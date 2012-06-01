@@ -28,8 +28,8 @@ namespace OpenAttractor
         public double CurrentVideoProgress { get { return (double)GetValue(_currentVideoProgress); } set { SetValue(_currentVideoProgress, value); } }
         public static readonly DependencyProperty _currentVideoProgress = DependencyProperty.Register("CurrentVideoProgress", typeof(double), typeof(VideoPlayer), new FrameworkPropertyMetadata((double)0));
 
-        public bool LargePlayButtonPressed { get { return (bool)GetValue(_largePlayButtonPressed); } set { SetValue(_largePlayButtonPressed, value); } }
-        public static readonly DependencyProperty _largePlayButtonPressed = DependencyProperty.Register("LargePlayButtonPressed", typeof(bool), typeof(VideoPlayer), new FrameworkPropertyMetadata(false));
+		public bool VideoIsPlaying { get { return (bool)GetValue(_videoIsPlaying); } set { SetValue(_videoIsPlaying, value); } }
+		public static readonly DependencyProperty _videoIsPlaying = DependencyProperty.Register("VideoIsPlaying", typeof(bool), typeof(VideoPlayer), new FrameworkPropertyMetadata(false));
 
         private Timer _playTimer;
 
@@ -47,7 +47,7 @@ namespace OpenAttractor
                 videoPlayer.Play();
             };
 
-            _playTimer = new Timer {Interval = 500};
+            _playTimer = new Timer {Interval = 300};
             _playTimer.Elapsed += delegate(object o, ElapsedEventArgs args)
                                       {
                                           Application.Current.Dispatcher.BeginInvoke(
@@ -62,14 +62,8 @@ namespace OpenAttractor
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
             videoPlayer.Play();
-            PlayButton.Visibility = Visibility.Hidden;
-			Overlay.Visibility = Visibility.Hidden;
-
-            PauseButton.Visibility = Visibility.Visible;
-            RewindButton.Visibility = Visibility.Visible;
-			PlayButtonSmall.Visibility = Visibility.Hidden;
-
             _playTimer.Start();
+        	VideoIsPlaying = true;
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
@@ -80,13 +74,8 @@ namespace OpenAttractor
         private void PauseButton_Click(object sender, RoutedEventArgs e)
         {
             videoPlayer.Pause();
-
-            ((SurfaceButton)sender).Visibility = Visibility.Collapsed;
-            PlayButtonSmall.Visibility = Visibility.Visible;
-			Overlay.Visibility = Visibility.Visible;
-			PlayButton.Visibility = Visibility.Visible;
-
             _playTimer.Stop();
+			VideoIsPlaying = false;
         }
 
         private void videoPlayer_Loaded(object sender, RoutedEventArgs e)
@@ -99,14 +88,8 @@ namespace OpenAttractor
         private void PlayButtonSmall_Click(object sender, RoutedEventArgs e)
         {
             videoPlayer.Play();
-
-            ((SurfaceButton)sender).Visibility = Visibility.Collapsed;
-
-            Overlay.Visibility = Visibility.Hidden;
-			PlayButton.Visibility = Visibility.Hidden;
-            PauseButton.Visibility = Visibility.Visible;
-
             _playTimer.Start();
+			VideoIsPlaying = true;
         }
     }
 }

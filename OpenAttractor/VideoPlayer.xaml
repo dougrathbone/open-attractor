@@ -8,16 +8,41 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d">
     <Grid>
-         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+         <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="10">
             <MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="UniformToFill" />
-            <Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay" />
-            <s:SurfaceButton Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+			<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay">
+				<Image.Style>
+					<Style TargetType="{x:Type Image}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="False">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Image.Style>
+			</Image>
+			<s:SurfaceButton Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                 <s:SurfaceButton.Content>
                     <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" />
                 </s:SurfaceButton.Content>
-            </s:SurfaceButton>
+				<s:SurfaceButton.Style>
+					<Style TargetType="{x:Type s:SurfaceButton}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="False">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</s:SurfaceButton.Style>
+			</s:SurfaceButton>
         </Grid>
-       <Grid Height="40" Name="PlayerControls" VerticalAlignment="Bottom" Margin="5,0,5,0">
+		<Grid Height="40" Name="PlayerControls" VerticalAlignment="Bottom" Margin="5,0,5,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition ColumnDefinition.Width="40" />
                 <ColumnDefinition ColumnDefinition.Width="40" />
@@ -27,41 +52,71 @@
                 <s:SurfaceButton.Background>
                     <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_rewindbutton.png" />
                 </s:SurfaceButton.Background>
-            </s:SurfaceButton>
-            <s:SurfaceButton x:Name="PauseButton" Visibility="Collapsed" Click="PauseButton_Click"  Grid.Column="1">
+				
+			</s:SurfaceButton>
+            <s:SurfaceButton x:Name="PauseButton" Click="PauseButton_Click"  Grid.Column="1">
                 <s:SurfaceButton.Background>
                     <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_pausebutton.png" />
                 </s:SurfaceButton.Background>
+				<s:SurfaceButton.Style>
+					<Style TargetType="{x:Type s:SurfaceButton}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="False">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</s:SurfaceButton.Style>
             </s:SurfaceButton>
             <s:SurfaceButton x:Name="PlayButtonSmall" Grid.Column="1" Click="PlayButtonSmall_Click">
                 <s:SurfaceButton.Background>
                     <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_playbutton_small.png" />
                 </s:SurfaceButton.Background>
+				<s:SurfaceButton.Style>
+					<Style TargetType="{x:Type s:SurfaceButton}">
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="False">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</s:SurfaceButton.Style>
             </s:SurfaceButton>
             <Border Border.Background="#881E1E1E" FrameworkElement.Margin="10,15,0,15" FrameworkElement.Height="4" Grid.Column="2" />
-            <Border Border.Background="#FF0BD5C9" FrameworkElement.Margin="10,15,0,15" FrameworkElement.Height="4" Grid.Column="2">
+			<Border Border.Background="#7FC9FA" FrameworkElement.Margin="10,15,0,15" FrameworkElement.Height="4" Grid.Column="2">
                 <UIElement.RenderTransform>
                     <ScaleTransform ScaleTransform.ScaleX="{Binding Path=CurrentVideoProgress}" />
                 </UIElement.RenderTransform>
             </Border>
-
-        </Grid>
-    </Grid>
-        <!--<Trigger Trigger.Property="local: LargePlayButtonPressed" Trigger.Value="True">
-        <TriggerBase.EnterActions>
-            <BeginStoryboard>
-                <Storyboard>
-                        <ThicknessAnimation Storyboard.TargetName="PlayerControls" Storyboard.TargetProperty="Margin" Timeline.Duration="0:0:0.300" ThicknessAnimation.From="5,0,5,0" ThicknessAnimation.To="5,0,5,-40" />
-                </Storyboard>
-            </BeginStoryboard>
-        </TriggerBase.EnterActions>
-        <TriggerBase.ExitActions>
-            <BeginStoryboard>
-                <Storyboard>
-                        <ThicknessAnimation Storyboard.TargetName="PlayerControls" Storyboard.TargetProperty="Margin" Timeline.Duration="0:0:0.300" ThicknessAnimation.From="5,0,5,-40" ThicknessAnimation.To="5,0,5,0" />
-                </Storyboard>
-            </BeginStoryboard>
-        </TriggerBase.ExitActions>
-    </Trigger>-->
+			<Grid.Style>
+				<Style TargetType="{x:Type Grid}">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ThicknessAnimation Storyboard.TargetProperty="Margin" Timeline.Duration="0:0:0.300" ThicknessAnimation.From="5,0,5,0" ThicknessAnimation.To="5,0,5,-40" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<ThicknessAnimation Storyboard.TargetProperty="Margin" Timeline.Duration="0:0:0.300" ThicknessAnimation.From="5,0,5,-40" ThicknessAnimation.To="5,0,5,0" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
+		</Grid>
+    </Grid>      
 
 </UserControl>
