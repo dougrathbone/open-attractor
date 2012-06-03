@@ -1,9 +1,12 @@
 using System;
 using System.Configuration;
 using System.IO;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Microsoft.Surface;
 using Microsoft.Surface.Presentation.Controls;
 
@@ -14,6 +17,12 @@ namespace OpenAttractor
     /// </summary>
     public partial class SurfaceWindow1 : SurfaceWindow
     {
+        private Timer clearScreenTimer;
+        private DateTime timeLastTouched = DateTime.MinValue;
+
+        public double TimeSinceLastTouch { get { return (double) GetValue(_timeSinceLastTouch); } set { SetValue(_timeSinceLastTouch, value); } }
+        public static readonly DependencyProperty _timeSinceLastTouch = DependencyProperty.Register("TimeSinceLastTouch", typeof(double), typeof(SurfaceWindow1), new FrameworkPropertyMetadata((double)0));
+
         /// <summary>
         /// Default constructor.
         /// </summary>
@@ -24,30 +33,95 @@ namespace OpenAttractor
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
             Loaded += new RoutedEventHandler(SurfaceWindow1_Loaded);
+            TouchDown +=new EventHandler<System.Windows.Input.TouchEventArgs>(
+                delegate(object o, TouchEventArgs args)
+                    {
+                        Application.Current.Dispatcher.BeginInvoke(
+                            DispatcherPriority.Background,
+                            new Action(() => timeLastTouched = DateTime.Now));
+                    });
         }
 
         void SurfaceWindow1_Loaded(object sender, RoutedEventArgs e)
         {
-            var images = Directory.GetFiles(ConfigurationManager.AppSettings["PhotoAssetsPath"], "*.jpg");
-            var videos = Directory.GetFiles(ConfigurationManager.AppSettings["VideoAssetsPath"], "*.wmv");
+            timeLastTouched = DateTime.Now;
+            InitialiseTouchTimer();
 
-            foreach (var imagePath in images)
+            if (AppSettings.DebugEnabled)
             {
-                var imageControl = new Image();
-                var myBitmapImage = new BitmapImage();
-                myBitmapImage.BeginInit();
-                myBitmapImage.UriSource = new Uri(imagePath);
-                myBitmapImage.EndInit();
-                imageControl.Source = myBitmapImage;
-                var scatterView = new ScatterViewItem { Content = imageControl };
-                ScatterContainer.Items.Add(scatterView);
+                InitialiseDebugTimer();
+                TimeSinceLastTouchLabel.Visibility = Visibility.Visible;
             }
 
-            foreach (var videoPath in videos)
+            InitialiseScatterItems();
+        }
+
+        private void InitialiseScatterItems()
+        {
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(() =>
+                               {
+                                   ScatterContainer.Items.Clear();
+
+                                   var images =
+                                       Directory.GetFiles(
+                                           ConfigurationManager.AppSettings[
+                                               "PhotoAssetsPath"], "*.jpg");
+                                   var videos =
+                                       Directory.GetFiles(
+                                           ConfigurationManager.AppSettings[
+                                               "VideoAssetsPath"], "*.wmv");
+
+                                   foreach (var imagePath in images)
+                                   {
+                                       var imageControl = new Image();
+                                       var myBitmapImage = new BitmapImage();
+                                       myBitmapImage.BeginInit();
+                                       myBitmapImage.UriSource = new Uri(imagePath);
+                                       myBitmapImage.EndInit();
+                                       imageControl.Source = myBitmapImage;
+                                       var scatterView = new ScatterViewItem {Content = imageControl};
+                                       ScatterContainer.Items.Add(scatterView);
+                                   }
+
+                                   foreach (var videoPath in videos)
+                                   {
+                                       var videoControl = new VideoPlayer {Source = videoPath};
+                                       var scatterView = new ScatterViewItem {Content = videoControl};
+                                       ScatterContainer.Items.Add(scatterView);
+                                   }
+                               }));
+        }
+
+        private Timer labelTimer;
+        private void InitialiseDebugTimer()
+        {
+            labelTimer = new Timer { Interval = 1000, AutoReset = true };
+            labelTimer.Elapsed += delegate(object sender, ElapsedEventArgs args)
             {
-                var videoControl = new VideoPlayer { Source = videoPath };
-                var scatterView = new ScatterViewItem { Content = videoControl };
-                ScatterContainer.Items.Add(scatterView);
+                Application.Current.Dispatcher.BeginInvoke(
+                    DispatcherPriority.Background,
+                    new Action(
+                        () =>
+                        TimeSinceLastTouch =
+                        ((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds));
+            };
+            labelTimer.Enabled = true;
+        }
+        private void InitialiseTouchTimer()
+        {
+            clearScreenTimer = new Timer {Interval = 2000};
+            clearScreenTimer.Elapsed += new ElapsedEventHandler(clearScreenTimer_Elapsed);
+            clearScreenTimer.Enabled = true;
+        }
+
+        void clearScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds > AppSettings.ClearScreenTimerInterval)
+            {
+                timeLastTouched = DateTime.Now;
+                InitialiseScatterItems();
             }
         }
 
@@ -58,6 +132,9 @@ namespace OpenAttractor
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
+
+            labelTimer.Enabled = false;
+            clearScreenTimer.Enabled = false;
 
             // Remove handlers for window availability events
             RemoveWindowAvailabilityHandlers();
