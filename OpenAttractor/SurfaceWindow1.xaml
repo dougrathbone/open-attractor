@@ -1,35 +1,10 @@
 ﻿<s:SurfaceWindow x:Class="OpenAttractor.SurfaceWindow1"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:s="http://schemas.microsoft.com/surface/2008" xmlns:Properties="clr-namespace:OpenAttractor.Properties"
-                 xmlns:OpenAttractor="clr-namespace:OpenAttractor" Title="OpenAttractor">
+    xmlns:s="http://schemas.microsoft.com/surface/2008"
+    Title="OpenAttractor">
     <s:SurfaceWindow.Background>
         <ImageBrush ImageSource="/OpenAttractor;component/Resources/WoodBackground.png"/>
     </s:SurfaceWindow.Background>
-		<s:ScatterView>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Desert.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Hydrangeas.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Jellyfish.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Koala.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Lighthouse.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Penguins.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem>
-                <Image Source="/OpenAttractor;component/Pictures/Tulips.jpg"/>
-            </s:ScatterViewItem>
-            <s:ScatterViewItem MinHeight="80" MinWidth="80">
-                <OpenAttractor:VideoPlayer Source="Videos/Wildlife.wmv" />
-            </s:ScatterViewItem>
-        </s:ScatterView>
+    <s:ScatterView x:Name="ScatterContainer"/>
 </s:SurfaceWindow>

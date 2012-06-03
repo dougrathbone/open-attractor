@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
-             xmlns:OpenAttractor="clr-namespace:OpenAttractor"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d">
     <Grid>
@@ -51,8 +50,7 @@
             <s:SurfaceButton x:Name="RewindButton" Click="RewindButton_Click"  VerticalAlignment="Top">
                 <s:SurfaceButton.Background>
                     <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_rewindbutton.png" />
-                </s:SurfaceButton.Background>
-				
+                </s:SurfaceButton.Background>				
 			</s:SurfaceButton>
             <s:SurfaceButton x:Name="PauseButton" Click="PauseButton_Click"  Grid.Column="1">
                 <s:SurfaceButton.Background>
@@ -117,6 +115,5 @@
 				</Style>
 			</Grid.Style>
 		</Grid>
-    </Grid>      
-
+    </Grid>
 </UserControl>

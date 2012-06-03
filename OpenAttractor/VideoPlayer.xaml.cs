@@ -1,25 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Microsoft.Surface.Presentation.Controls;
 
 namespace OpenAttractor
 {
-    /// <summary>
-    /// Interaction logic for VideoPlayer.xaml
-    /// </summary>
     public partial class VideoPlayer : UserControl
     {
         public string Source { get { return (string)GetValue(_sourceProperty); } set { SetValue(_sourceProperty, value); } }
@@ -36,10 +22,10 @@ namespace OpenAttractor
         public VideoPlayer()
         {
             InitializeComponent();
-            Loaded += new RoutedEventHandler(VideoPlayer_Loaded);
+            Loaded += new RoutedEventHandler(VideoPlayerLoaded);
         }
 
-        void VideoPlayer_Loaded(object sender, RoutedEventArgs e)
+        void VideoPlayerLoaded(object sender, RoutedEventArgs e)
         {
             videoPlayer.MediaEnded += delegate(object o, RoutedEventArgs args)
             {
@@ -57,7 +43,6 @@ namespace OpenAttractor
                                                                videoPlayer.NaturalDuration.TimeSpan.TotalMilliseconds));
                                       };
         }
-
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
@@ -81,7 +66,7 @@ namespace OpenAttractor
         private void videoPlayer_Loaded(object sender, RoutedEventArgs e)
         {
             ((MediaElement)sender).Play();
-			((MediaElement)sender).Position = new TimeSpan(0, 0, 0, 1);
+            ((MediaElement)sender).Position = new TimeSpan(0, 0, 0, 1);
             ((MediaElement)sender).Pause();
         }
 

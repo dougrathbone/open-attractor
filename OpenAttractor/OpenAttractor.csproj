@@ -35,6 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -94,6 +95,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -108,17 +110,6 @@
     <Resource Include="Resources\video_playbutton_large.png" />
     <Resource Include="Resources\video_rewindbutton.png" />
     <Resource Include="Resources\resources_video_frame.png" />
-    <Content Include="Videos\Wildlife.wmv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Pictures\Chrysanthemum.jpg" />
-    <Resource Include="Pictures\Desert.jpg" />
-    <Resource Include="Pictures\Hydrangeas.jpg" />
-    <Resource Include="Pictures\Jellyfish.jpg" />
-    <Resource Include="Pictures\Koala.jpg" />
-    <Resource Include="Pictures\Lighthouse.jpg" />
-    <Resource Include="Pictures\Penguins.jpg" />
-    <Resource Include="Pictures\Tulips.jpg" />
     <Resource Include="Resources\WoodBackground.png" />
     <Content Include="Resources\icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
