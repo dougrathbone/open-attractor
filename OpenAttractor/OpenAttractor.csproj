@@ -36,12 +36,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -50,7 +46,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Microsoft.Surface" />
     <Reference Include="Microsoft.Surface.Presentation" />
-    <Reference Include="Microsoft.Surface.Presentation.Generic" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -106,10 +101,10 @@
     <Resource Include="Resources\video_overlay.png" />
     <Resource Include="Resources\video_pausebutton.png" />
     <Resource Include="Resources\video_playbutton_small.png" />
-    <Resource Include="Resources\resources_play_down.png" />
+    <Resource Include="Resources\video_playbutton_large_down.png" />
     <Resource Include="Resources\video_playbutton_large.png" />
     <Resource Include="Resources\video_rewindbutton.png" />
-    <Resource Include="Resources\resources_video_frame.png" />
+    <Resource Include="Resources\video_frame.png" />
     <Resource Include="Resources\WoodBackground.png" />
     <Content Include="Resources\icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
