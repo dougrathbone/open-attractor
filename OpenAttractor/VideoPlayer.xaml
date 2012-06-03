@@ -4,11 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:s="clr-namespace:Microsoft.Surface.Presentation.Controls;assembly=Microsoft.Surface.Presentation"
+             xmlns:ComponentModel="clr-namespace:System.ComponentModel;assembly=System"
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              mc:Ignorable="d">
     <Grid>
          <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Panel.ZIndex="10">
-            <MediaElement x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="UniformToFill" />
+            <Grid.Background>
+                <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_frame.png" />
+            </Grid.Background>
+            <MediaElement Margin="3" x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="UniformToFill" />
 			<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay">
 				<Image.Style>
 					<Style TargetType="{x:Type Image}">
@@ -23,20 +27,20 @@
 					</Style>
 				</Image.Style>
 			</Image>
-			<s:SurfaceButton Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+			<s:SurfaceButton x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                 <s:SurfaceButton.Content>
-                    <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png" />
+                    <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png"/>
                 </s:SurfaceButton.Content>
 				<s:SurfaceButton.Style>
-					<Style TargetType="{x:Type s:SurfaceButton}">
+                    <Style TargetType="{x:Type s:SurfaceButton}">
 						<Style.Triggers>
-							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
+                            <DataTrigger Binding="{Binding VideoIsPlaying}" Value="True">
 								<Setter Property="Visibility" Value="Collapsed"/>
 							</DataTrigger>
 							<DataTrigger Binding="{Binding VideoIsPlaying}" Value="False">
 								<Setter Property="Visibility" Value="Visible"/>
-							</DataTrigger>
-						</Style.Triggers>
+							</DataTrigger>                            
+                        </Style.Triggers>
 					</Style>
 				</s:SurfaceButton.Style>
 			</s:SurfaceButton>
