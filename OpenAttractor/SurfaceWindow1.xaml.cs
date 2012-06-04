@@ -40,10 +40,11 @@ namespace OpenAttractor
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
             Loaded += new RoutedEventHandler(SurfaceWindow1_Loaded);
-            PreviewTouchDown += new EventHandler<TouchEventArgs>(SurfaceWindow1_PreviewTouchDown);
+            PreviewTouchDown += delegate(object sender, TouchEventArgs args) { FireClickEvent(); };
+            PreviewMouseDown += delegate(object sender, MouseButtonEventArgs args) { FireClickEvent(); };
         }
 
-        void SurfaceWindow1_PreviewTouchDown(object sender, TouchEventArgs e)
+        void FireClickEvent()
         {
             Application.Current.Dispatcher.BeginInvoke(
                             DispatcherPriority.Background,
