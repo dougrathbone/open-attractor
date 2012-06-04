@@ -5,7 +5,7 @@
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     Title="OpenAttractor">
     <s:SurfaceWindow.Background>
-        <ImageBrush ImageSource="/OpenAttractor;component/Resources/WoodBackground.png"/>
+        <ImageBrush ImageSource="{Binding Path=BackgroundImagePath}"/>
     </s:SurfaceWindow.Background>
     <Grid>
         <Label Content="{Binding Path=TimeSinceLastTouch}" Name="TimeSinceLastTouchLabel" Visibility="Collapsed"/>

@@ -1,14 +1,20 @@
 using System;
 using System.Configuration;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Surface;
 using Microsoft.Surface.Presentation.Controls;
+using OpenAttractor.Properties;
+using Timer = System.Timers.Timer;
 
 namespace OpenAttractor
 {
@@ -20,12 +26,13 @@ namespace OpenAttractor
         private Timer clearScreenTimer;
         private DateTime timeLastTouched = DateTime.MinValue;
 
-        public double TimeSinceLastTouch { get { return (double) GetValue(_timeSinceLastTouch); } set { SetValue(_timeSinceLastTouch, value); } }
+        public double TimeSinceLastTouch { get { return (double)GetValue(_timeSinceLastTouch); } set { SetValue(_timeSinceLastTouch, value); } }
         public static readonly DependencyProperty _timeSinceLastTouch = DependencyProperty.Register("TimeSinceLastTouch", typeof(double), typeof(SurfaceWindow1), new FrameworkPropertyMetadata((double)0));
 
-        /// <summary>
-        /// Default constructor.
-        /// </summary>
+        public string BackgroundImagePath { get { return (string)GetValue(_backgroundImagePath); } set { SetValue(_backgroundImagePath, value); } }
+        public static readonly DependencyProperty _backgroundImagePath = DependencyProperty.Register("BackgroundImagePath", typeof(string), typeof(SurfaceWindow1), new FrameworkPropertyMetadata(AppSettings.BackgroundPath));
+
+
         public SurfaceWindow1()
         {
             InitializeComponent();
@@ -33,13 +40,18 @@ namespace OpenAttractor
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
             Loaded += new RoutedEventHandler(SurfaceWindow1_Loaded);
-            TouchDown +=new EventHandler<System.Windows.Input.TouchEventArgs>(
-                delegate(object o, TouchEventArgs args)
-                    {
-                        Application.Current.Dispatcher.BeginInvoke(
+            PreviewTouchDown += new EventHandler<TouchEventArgs>(SurfaceWindow1_PreviewTouchDown);
+        }
+
+        void SurfaceWindow1_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
+            Application.Current.Dispatcher.BeginInvoke(
                             DispatcherPriority.Background,
-                            new Action(() => timeLastTouched = DateTime.Now));
-                    });
+                            new Action(() =>
+                            {
+                                timeLastTouched = DateTime.Now;
+                                throbObjects = false;
+                            }));
         }
 
         void SurfaceWindow1_Loaded(object sender, RoutedEventArgs e)
@@ -47,82 +59,114 @@ namespace OpenAttractor
             timeLastTouched = DateTime.Now;
             InitialiseTouchTimer();
 
-            if (AppSettings.DebugEnabled)
-            {
-                InitialiseDebugTimer();
-                TimeSinceLastTouchLabel.Visibility = Visibility.Visible;
-            }
+            TimeSinceLastTouchLabel.Visibility = Visibility.Collapsed;
 
             InitialiseScatterItems();
         }
 
         private void InitialiseScatterItems()
         {
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background,
-                new Action(() =>
-                               {
-                                   ScatterContainer.Items.Clear();
 
-                                   var images =
-                                       Directory.GetFiles(
-                                           ConfigurationManager.AppSettings[
-                                               "PhotoAssetsPath"], "*.jpg");
-                                   var videos =
-                                       Directory.GetFiles(
-                                           ConfigurationManager.AppSettings[
-                                               "VideoAssetsPath"], "*.wmv");
+            ScatterContainer.Items.Clear();
 
-                                   foreach (var imagePath in images)
-                                   {
-                                       var imageControl = new Image();
-                                       var myBitmapImage = new BitmapImage();
-                                       myBitmapImage.BeginInit();
-                                       myBitmapImage.UriSource = new Uri(imagePath);
-                                       myBitmapImage.EndInit();
-                                       imageControl.Source = myBitmapImage;
-                                       var scatterView = new ScatterViewItem {Content = imageControl};
-                                       ScatterContainer.Items.Add(scatterView);
-                                   }
+            var images =
+                Directory.GetFiles(ConfigurationManager.AppSettings["PhotoAssetsPath"], "*.*", SearchOption.AllDirectories)
+                         .Where(s => s.EndsWith(".jpg")
+                             || s.EndsWith(".jpeg")
+                             || s.EndsWith(".png")
+                             || s.EndsWith(".gif"));
 
-                                   foreach (var videoPath in videos)
-                                   {
-                                       var videoControl = new VideoPlayer {Source = videoPath};
-                                       var scatterView = new ScatterViewItem {Content = videoControl};
-                                       ScatterContainer.Items.Add(scatterView);
-                                   }
-                               }));
-        }
+            var videos =
+                Directory.GetFiles(
+                    ConfigurationManager.AppSettings[
+                        "VideoAssetsPath"], "*.wmv");
 
-        private Timer labelTimer;
-        private void InitialiseDebugTimer()
-        {
-            labelTimer = new Timer { Interval = 1000, AutoReset = true };
-            labelTimer.Elapsed += delegate(object sender, ElapsedEventArgs args)
+            foreach (var imagePath in images)
             {
-                Application.Current.Dispatcher.BeginInvoke(
-                    DispatcherPriority.Background,
-                    new Action(
-                        () =>
-                        TimeSinceLastTouch =
-                        ((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds));
-            };
-            labelTimer.Enabled = true;
+                var imageControl = new ImageViewer();
+                var myBitmapImage = new BitmapImage();
+                myBitmapImage.BeginInit();
+                myBitmapImage.UriSource = new Uri(imagePath);
+                myBitmapImage.EndInit();
+                imageControl.Source = myBitmapImage;
+                var scatterView = new ScatterViewItem { Content = imageControl, MaxWidth = AppSettings.MaximumAssetWidth };
+
+                ScatterContainer.Items.Add(scatterView);
+            }
+
+            foreach (var videoPath in videos)
+            {
+                var videoControl = new VideoPlayer { Source = videoPath };
+                var scatterView = new ScatterViewItem { Content = videoControl, MaxWidth = AppSettings.MaximumAssetWidth };
+                ScatterContainer.Items.Add(scatterView);
+            }
         }
+
+        void RunScaleAnimation(FrameworkElement e)
+        {
+
+            var storyboard = new Storyboard();
+            var easeOut = new BackEase { EasingMode = EasingMode.EaseOut, Amplitude = 0.3 };
+
+            var startHeight = e.ActualHeight;
+            var startWidth = e.ActualWidth;
+
+            var growAnimationHOut = new DoubleAnimation(startHeight, startHeight * 1.05,
+                                                        TimeSpan.FromMilliseconds(70)) { AutoReverse = true };
+
+            var growAnimationWOut = new DoubleAnimation(startWidth, startWidth * 1.05,
+                                                        TimeSpan.FromMilliseconds(70)) { AutoReverse = true };
+
+            growAnimationHOut.EasingFunction = easeOut;
+            growAnimationWOut.EasingFunction = easeOut;
+
+            storyboard.Children.Add(growAnimationHOut);
+            storyboard.Children.Add(growAnimationWOut);
+
+            Storyboard.SetTargetProperty(growAnimationWOut, new PropertyPath(WidthProperty));
+            Storyboard.SetTargetProperty(growAnimationHOut, new PropertyPath(HeightProperty));
+
+            e.BeginStoryboard(storyboard);
+        }
+
+        private bool throbObjects = false;
         private void InitialiseTouchTimer()
         {
-            clearScreenTimer = new Timer {Interval = 2000};
-            clearScreenTimer.Elapsed += new ElapsedEventHandler(clearScreenTimer_Elapsed);
+            clearScreenTimer = new Timer { Interval = 2000 };
+            clearScreenTimer.Elapsed += clearScreenTimer_Elapsed;
             clearScreenTimer.Enabled = true;
         }
 
         void clearScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            if (((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds > AppSettings.ClearScreenTimerInterval)
-            {
-                timeLastTouched = DateTime.Now;
-                InitialiseScatterItems();
-            }
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background,
+                new Action(
+                    () =>
+                    {
+                        TimeSinceLastTouch = ((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds;
+                        if (TimeSinceLastTouch > AppSettings.ClearScreenTimerInterval)
+                        {
+                            timeLastTouched = DateTime.Now;
+                            InitialiseScatterItems();
+                        }
+                        if (TimeSinceLastTouch > AppSettings.ThrobTimerInterval && !throbObjects)
+                        {
+                            throbObjects = true;
+                            StartThrobStoryboards();
+                        }
+                    }));
+        }
+
+        private int nextObject = 0;
+        private void StartThrobStoryboards()
+        {
+            
+            RunScaleAnimation((FrameworkElement)ScatterContainer.Items[nextObject]);
+            nextObject++;
+            if (nextObject >= ScatterContainer.Items.Count) nextObject = 0;
+
+            throbObjects = false;
         }
 
         /// <summary>
@@ -133,7 +177,7 @@ namespace OpenAttractor
         {
             base.OnClosed(e);
 
-            labelTimer.Enabled = false;
+            throbObjects = false;
             clearScreenTimer.Enabled = false;
 
             // Remove handlers for window availability events
