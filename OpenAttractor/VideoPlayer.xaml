@@ -13,7 +13,7 @@
                 <ImageBrush ImageSource="/OpenAttractor;component/Resources/video_frame.png" />
             </Grid.Background>
             <MediaElement Margin="3" x:Name="videoPlayer" ScrubbingEnabled="True" Source="{Binding Path=Source}" Loaded="videoPlayer_Loaded" LoadedBehavior="Manual" UnloadedBehavior="Stop" Stretch="UniformToFill" />
-			<Image Source="/OpenAttractor;component/Resources/video_overlay.png" x:Name="Overlay">
+			<Image Source="/OpenAttractor;component/Resources/video_overlay.png" Stretch="Fill" x:Name="Overlay">
 				<Image.Style>
 					<Style TargetType="{x:Type Image}">
 						<Style.Triggers>
@@ -27,7 +27,11 @@
 					</Style>
 				</Image.Style>
 			</Image>
+<<<<<<< HEAD
 			<s:SurfaceButton x:Name="PlayButton" Click="PlayButton_Click" Background="Transparent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+=======
+			<s:SurfaceButton Background="Transparent" x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+>>>>>>> cf61b64d2acf29c252aa8b8b24955e20f0a492cd
                 <s:SurfaceButton.Content>
                     <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png">
                         <!--<Image.Style>

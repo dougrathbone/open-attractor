@@ -35,7 +35,7 @@ namespace OpenAttractor
         public string BackgroundImagePath { get { return (string)GetValue(_backgroundImagePath); } set { SetValue(_backgroundImagePath, value); } }
         public static readonly DependencyProperty _backgroundImagePath = DependencyProperty.Register("BackgroundImagePath", typeof(string), typeof(SurfaceWindow1), new FrameworkPropertyMetadata(AppSettings.BackgroundPath));
 
-        private List<VideoPlayer> videoPlayers;
+        private List<VideoPlayer> _videoPlayers;
 
         public SurfaceWindow1()
         {
@@ -62,7 +62,7 @@ namespace OpenAttractor
         void SurfaceWindow1_Loaded(object sender, RoutedEventArgs e)
         {
             _timeLastTouched = DateTime.Now;
-            videoPlayers = new List<VideoPlayer>();
+            _videoPlayers = new List<VideoPlayer>();
 
             InitialiseTouchTimer();
 
@@ -73,7 +73,7 @@ namespace OpenAttractor
 
         private void InitialiseScatterItems()
         {
-            videoPlayers.ForEach(x=>x.StopVideo());
+            _videoPlayers.ForEach(x=>x.StopVideo());
             ScatterContainer.Items.Clear();
 
             var images =
@@ -109,17 +109,17 @@ namespace OpenAttractor
                 videoControl.OnVideoPlayerStopped += videoControl_VideoStopped;
                 
                 ScatterContainer.Items.Add(scatterView);
-                videoPlayers.Add(videoControl);
+                _videoPlayers.Add(videoControl);
             }
         }
 
         void videoControl_OnVideoPlayerPlayed(object sender, EventArgs e)
         {
-            var videoPlayersPlaying = videoPlayers.Count(x => x.VideoIsPlaying);
+            var videoPlayersPlaying = _videoPlayers.Count(x => x.VideoIsPlaying);
 
             if (videoPlayersPlaying > AppSettings.MaximumVideosPlayingAtOnce)
             {
-                var singleOrDefault = videoPlayers.Where(x => x.VideoIsPlaying).OrderBy(x => x.PlayStarted).Take(1).SingleOrDefault();
+                var singleOrDefault = _videoPlayers.Where(x => x.VideoIsPlaying).OrderBy(x => x.PlayStarted).Take(1).SingleOrDefault();
                 if (singleOrDefault != null)
                     singleOrDefault.StopVideo();
                 Debug.WriteLine("Too many videos playing, stopping one");
@@ -131,7 +131,7 @@ namespace OpenAttractor
         void videoControl_VideoStopped(object sender, EventArgs e)
         {
             Debug.WriteLine("Video player stopped");
-            Debug.WriteLine("{0} videos currently playing", videoPlayers.Count(x => x.VideoIsPlaying));
+            Debug.WriteLine("{0} videos currently playing", _videoPlayers.Count(x => x.VideoIsPlaying));
         }
 
         private bool _throbObjects = false;
