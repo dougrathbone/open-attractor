@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Surface;
 using Microsoft.Surface.Presentation.Controls;
+using OpenAttractor.Helpers;
 using OpenAttractor.Properties;
 using Timer = System.Timers.Timer;
 
@@ -23,8 +26,8 @@ namespace OpenAttractor
     /// </summary>
     public partial class SurfaceWindow1 : SurfaceWindow
     {
-        private Timer clearScreenTimer;
-        private DateTime timeLastTouched = DateTime.MinValue;
+        private Timer _clearScreenTimer;
+        private DateTime _timeLastTouched = DateTime.MinValue;
 
         public double TimeSinceLastTouch { get { return (double)GetValue(_timeSinceLastTouch); } set { SetValue(_timeSinceLastTouch, value); } }
         public static readonly DependencyProperty _timeSinceLastTouch = DependencyProperty.Register("TimeSinceLastTouch", typeof(double), typeof(SurfaceWindow1), new FrameworkPropertyMetadata((double)0));
@@ -32,6 +35,7 @@ namespace OpenAttractor
         public string BackgroundImagePath { get { return (string)GetValue(_backgroundImagePath); } set { SetValue(_backgroundImagePath, value); } }
         public static readonly DependencyProperty _backgroundImagePath = DependencyProperty.Register("BackgroundImagePath", typeof(string), typeof(SurfaceWindow1), new FrameworkPropertyMetadata(AppSettings.BackgroundPath));
 
+        private List<VideoPlayer> videoPlayers;
 
         public SurfaceWindow1()
         {
@@ -39,9 +43,9 @@ namespace OpenAttractor
 
             // Add handlers for window availability events
             AddWindowAvailabilityHandlers();
-            Loaded += new RoutedEventHandler(SurfaceWindow1_Loaded);
-            PreviewTouchDown += delegate(object sender, TouchEventArgs args) { FireClickEvent(); };
-            PreviewMouseDown += delegate(object sender, MouseButtonEventArgs args) { FireClickEvent(); };
+            Loaded += SurfaceWindow1_Loaded;
+            PreviewTouchDown += delegate { FireClickEvent(); };
+            PreviewMouseDown += delegate { FireClickEvent(); };
         }
 
         void FireClickEvent()
@@ -50,14 +54,16 @@ namespace OpenAttractor
                             DispatcherPriority.Background,
                             new Action(() =>
                             {
-                                timeLastTouched = DateTime.Now;
-                                throbObjects = false;
+                                _timeLastTouched = DateTime.Now;
+                                _throbObjects = false;
                             }));
         }
 
         void SurfaceWindow1_Loaded(object sender, RoutedEventArgs e)
         {
-            timeLastTouched = DateTime.Now;
+            _timeLastTouched = DateTime.Now;
+            videoPlayers = new List<VideoPlayer>();
+
             InitialiseTouchTimer();
 
             TimeSinceLastTouchLabel.Visibility = Visibility.Collapsed;
@@ -67,7 +73,7 @@ namespace OpenAttractor
 
         private void InitialiseScatterItems()
         {
-
+            videoPlayers.ForEach(x=>x.StopVideo());
             ScatterContainer.Items.Clear();
 
             var images =
@@ -99,43 +105,41 @@ namespace OpenAttractor
             {
                 var videoControl = new VideoPlayer { Source = videoPath };
                 var scatterView = new ScatterViewItem { Content = videoControl, MaxWidth = AppSettings.MaximumAssetWidth };
+                videoControl.OnVideoPlayerPlayed += videoControl_OnVideoPlayerPlayed;
+                videoControl.OnVideoPlayerStopped += videoControl_VideoStopped;
+                
                 ScatterContainer.Items.Add(scatterView);
+                videoPlayers.Add(videoControl);
             }
         }
 
-        void RunScaleAnimation(FrameworkElement e)
+        void videoControl_OnVideoPlayerPlayed(object sender, EventArgs e)
         {
+            var videoPlayersPlaying = videoPlayers.Count(x => x.VideoIsPlaying);
 
-            var storyboard = new Storyboard();
-            var easeOut = new BackEase { EasingMode = EasingMode.EaseOut, Amplitude = 0.3 };
-
-            var startHeight = e.ActualHeight;
-            var startWidth = e.ActualWidth;
-
-            var growAnimationHOut = new DoubleAnimation(startHeight, startHeight * 1.05,
-                                                        TimeSpan.FromMilliseconds(70)) { AutoReverse = true };
-
-            var growAnimationWOut = new DoubleAnimation(startWidth, startWidth * 1.05,
-                                                        TimeSpan.FromMilliseconds(70)) { AutoReverse = true };
-
-            growAnimationHOut.EasingFunction = easeOut;
-            growAnimationWOut.EasingFunction = easeOut;
-
-            storyboard.Children.Add(growAnimationHOut);
-            storyboard.Children.Add(growAnimationWOut);
-
-            Storyboard.SetTargetProperty(growAnimationWOut, new PropertyPath(WidthProperty));
-            Storyboard.SetTargetProperty(growAnimationHOut, new PropertyPath(HeightProperty));
-
-            e.BeginStoryboard(storyboard);
+            if (videoPlayersPlaying > AppSettings.MaximumVideosPlayingAtOnce)
+            {
+                var singleOrDefault = videoPlayers.Where(x => x.VideoIsPlaying).OrderBy(x => x.PlayStarted).Take(1).SingleOrDefault();
+                if (singleOrDefault != null)
+                    singleOrDefault.StopVideo();
+                Debug.WriteLine("Too many videos playing, stopping one");
+            }
+            Debug.WriteLine("Video player played");
+            Debug.WriteLine("{0} videos currently playing", videoPlayersPlaying);
         }
 
-        private bool throbObjects = false;
+        void videoControl_VideoStopped(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Video player stopped");
+            Debug.WriteLine("{0} videos currently playing", videoPlayers.Count(x => x.VideoIsPlaying));
+        }
+
+        private bool _throbObjects = false;
         private void InitialiseTouchTimer()
         {
-            clearScreenTimer = new Timer { Interval = 2000 };
-            clearScreenTimer.Elapsed += clearScreenTimer_Elapsed;
-            clearScreenTimer.Enabled = true;
+            _clearScreenTimer = new Timer { Interval = 2000 };
+            _clearScreenTimer.Elapsed += clearScreenTimer_Elapsed;
+            _clearScreenTimer.Enabled = true;
         }
 
         void clearScreenTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -145,29 +149,29 @@ namespace OpenAttractor
                 new Action(
                     () =>
                     {
-                        TimeSinceLastTouch = ((TimeSpan)(DateTime.Now - timeLastTouched)).TotalSeconds;
+                        TimeSinceLastTouch = (DateTime.Now - _timeLastTouched).TotalSeconds;
                         if (TimeSinceLastTouch > AppSettings.ClearScreenTimerInterval)
                         {
-                            timeLastTouched = DateTime.Now;
+                            _timeLastTouched = DateTime.Now;
                             InitialiseScatterItems();
                         }
-                        if (TimeSinceLastTouch > AppSettings.ThrobTimerInterval && !throbObjects)
+                        if (TimeSinceLastTouch > AppSettings.ThrobTimerInterval && !_throbObjects)
                         {
-                            throbObjects = true;
+                            _throbObjects = true;
                             StartThrobStoryboards();
                         }
                     }));
         }
 
-        private int nextObject = 0;
+        private int _nextObjectIndex = 0;
         private void StartThrobStoryboards()
         {
             
-            RunScaleAnimation((FrameworkElement)ScatterContainer.Items[nextObject]);
-            nextObject++;
-            if (nextObject >= ScatterContainer.Items.Count) nextObject = 0;
+            AnimationHelper.RunScaleAnimation((FrameworkElement)ScatterContainer.Items[_nextObjectIndex]);
+            _nextObjectIndex++;
+            if (_nextObjectIndex >= ScatterContainer.Items.Count) _nextObjectIndex = 0;
 
-            throbObjects = false;
+            _throbObjects = false;
         }
 
         /// <summary>
@@ -178,8 +182,8 @@ namespace OpenAttractor
         {
             base.OnClosed(e);
 
-            throbObjects = false;
-            clearScreenTimer.Enabled = false;
+            _throbObjects = false;
+            _clearScreenTimer.Enabled = false;
 
             // Remove handlers for window availability events
             RemoveWindowAvailabilityHandlers();

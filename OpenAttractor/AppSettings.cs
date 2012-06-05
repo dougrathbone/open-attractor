@@ -59,5 +59,18 @@ namespace OpenAttractor
                     : 1920;
             }
         }
+
+        public static int MaximumVideosPlayingAtOnce
+        {
+            get
+            {
+                var settingValue = ConfigurationManager.AppSettings["MaximumVideosPlayingAtOnce"];
+                int temp;
+
+                return settingValue != null && int.TryParse(settingValue, out temp)
+                    ? temp
+                    : 2;
+            }
+        }
     }
 }

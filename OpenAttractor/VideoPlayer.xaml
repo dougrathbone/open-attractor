@@ -27,7 +27,7 @@
 					</Style>
 				</Image.Style>
 			</Image>
-			<s:SurfaceButton x:Name="PlayButton" Click="PlayButton_Click" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+			<s:SurfaceButton x:Name="PlayButton" Click="PlayButton_Click" Background="Transparent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
                 <s:SurfaceButton.Content>
                     <Image Source="/OpenAttractor;component/Resources/video_playbutton_large.png">
                         <!--<Image.Style>

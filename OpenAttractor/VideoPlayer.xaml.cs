@@ -6,6 +6,8 @@ using System.Windows.Threading;
 
 namespace OpenAttractor
 {
+    public delegate void ChangedEventHandler(object sender, EventArgs e);
+
     public partial class VideoPlayer : UserControl
     {
         public string Source { get { return (string)GetValue(_sourceProperty); } set { SetValue(_sourceProperty, value); } }
@@ -18,6 +20,23 @@ namespace OpenAttractor
 		public static readonly DependencyProperty _videoIsPlaying = DependencyProperty.Register("VideoIsPlaying", typeof(bool), typeof(VideoPlayer), new FrameworkPropertyMetadata(false));
 
         private Timer _playTimer;
+
+        public DateTime? PlayStarted { get; set; }
+
+        public event ChangedEventHandler OnVideoPlayerPlayed;
+        protected virtual void OnPlayed(EventArgs e)
+        {
+            PlayStarted = DateTime.Now;
+            if (OnVideoPlayerPlayed != null)
+                OnVideoPlayerPlayed(this, e);
+        }
+        public event ChangedEventHandler OnVideoPlayerStopped;
+        protected virtual void OnStopped(EventArgs e)
+        {
+            PlayStarted = null;
+            if (OnVideoPlayerStopped != null)
+                OnVideoPlayerStopped(this, e);
+        }
 
         public VideoPlayer()
         {
@@ -46,9 +65,7 @@ namespace OpenAttractor
 
         private void PlayButton_Click(object sender, RoutedEventArgs e)
         {
-            videoPlayer.Play();
-            _playTimer.Start();
-        	VideoIsPlaying = true;
+            PlayVideo();
         }
 
         private void RewindButton_Click(object sender, RoutedEventArgs e)
@@ -56,11 +73,25 @@ namespace OpenAttractor
             videoPlayer.Position = new TimeSpan(0, 0, 0, 0);
         }
 
-        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        public void StopVideo()
         {
             videoPlayer.Pause();
             _playTimer.Stop();
-			VideoIsPlaying = false;
+            VideoIsPlaying = false;
+            OnStopped(EventArgs.Empty);
+        }
+
+        public void PlayVideo()
+        {
+            videoPlayer.Play();
+            _playTimer.Start();
+            VideoIsPlaying = true;
+            OnPlayed(EventArgs.Empty);
+        }
+
+        private void PauseButton_Click(object sender, RoutedEventArgs e)
+        {
+            StopVideo();
         }
 
         private void videoPlayer_Loaded(object sender, RoutedEventArgs e)
@@ -72,9 +103,7 @@ namespace OpenAttractor
 
         private void PlayButtonSmall_Click(object sender, RoutedEventArgs e)
         {
-            videoPlayer.Play();
-            _playTimer.Start();
-			VideoIsPlaying = true;
+            PlayVideo();
         }
     }
 }

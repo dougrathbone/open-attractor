@@ -53,6 +53,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="Helpers\AnimationHelper.cs" />
     <Compile Include="ImageViewer.xaml.cs">
       <DependentUpon>ImageViewer.xaml</DependentUpon>
     </Compile>
