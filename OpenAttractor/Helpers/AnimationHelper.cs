@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media.Animation;
+using Microsoft.Surface.Presentation.Controls;
 
 namespace OpenAttractor.Helpers
 {
@@ -28,6 +29,10 @@ namespace OpenAttractor.Helpers
 
             storyboard.Children.Add(growAnimationHOut);
             storyboard.Children.Add(growAnimationWOut);
+
+			//remove the events after completed to ensure that the ScatterViewItem is resizable again
+			growAnimationWOut.Completed += delegate { e.BeginAnimation(FrameworkElement.WidthProperty, null); };
+        	growAnimationHOut.Completed += delegate { e.BeginAnimation(FrameworkElement.HeightProperty, null); };
 
             Storyboard.SetTargetProperty(growAnimationWOut, new PropertyPath(FrameworkElement.WidthProperty));
             Storyboard.SetTargetProperty(growAnimationHOut, new PropertyPath(FrameworkElement.HeightProperty));
